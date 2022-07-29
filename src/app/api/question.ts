@@ -115,7 +115,7 @@ const nodes: Node[] = [
     canBeCompleted: true,
     currentPath: ['Financial Readiness', 'Credit Education'],
     description: "what is credit and stuff",
-    parentIds: [],
+    parentIds: ['financial_readiness'],
     isEnabled() {
       return questionsAndAnswers['your_credit_score'] == undefined || questionsAndAnswers['your_credit_score'] == 'dont_know'
     },
@@ -154,12 +154,12 @@ function isNodeCompleted(node: Node): boolean {
     return true;
   }
 
-  node.parentIds.forEach(parentId => {
+  for (let parentId of node.parentIds) {
     if (completedNodes[parentId]) {
       return true;
     }
-  })
-
+  }
+  
   if (node.question) {
     return questionsAndAnswers[node.question.id] != undefined
   }
