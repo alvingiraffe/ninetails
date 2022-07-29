@@ -9,6 +9,14 @@ import { makePropToggle } from './utils';
 const NodeLabel = styled.h1`
 `;
 
+const Breadcrumb = styled.p`
+  margin-top: -1rem;
+  font-size: .75rem;
+`;
+
+const NodeDescription = styled.p`
+`;
+
 const QuestionText = styled.h2`
 `;
 
@@ -90,6 +98,9 @@ export const QuizComponent: React.FC<QuizComponentProps> = () => {
     <Flexbox justifyContent="center">
       <Flexbox direction="column" textAlign="center" alignItems="center">
         <NodeLabel>{node.label}</NodeLabel>
+        <Breadcrumb>{node.currentPath.join(' > ')}</Breadcrumb>
+        <NodeDescription>{node.description}</NodeDescription>
+        <Line />
         {!!node.question &&
           <>
             <QuestionText>{node.question.question}</QuestionText>

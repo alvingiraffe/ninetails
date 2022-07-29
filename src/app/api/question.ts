@@ -131,7 +131,7 @@ const nodes: Node[] = [
         snippet: "here's a snippet for downpayment",
       },
     ] ,
-    canBeCompleted: true,
+    canBeCompleted: false,
     currentPath: ['Home Ownership', 'Credit Education'],
     description: "All about owning a home",
     parentIds: [],
@@ -159,7 +159,7 @@ function isNodeCompleted(node: Node): boolean {
       return true;
     }
   }
-  
+
   if (node.question) {
     return questionsAndAnswers[node.question.id] != undefined
   }
