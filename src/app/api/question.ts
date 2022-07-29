@@ -82,6 +82,11 @@ const nodes: Node[] = [
         label: "What's a credit score?",
         snippet: "here's a snippet for credit score",
       },
+      {
+        url: 'https://www.google.com/search?q=What%27s+a+credit+score%3F&oq=What%27s+a+credit+score%3F',
+        label: "No but seriously, what is it?",
+        snippet: "Alright fine, some more information.",
+      },
     ] ,
     canBeCompleted: true,
     currentPath: ['Financial Readiness', 'Credit Score'],
@@ -100,6 +105,11 @@ const nodes: Node[] = [
         url: 'https://www.google.com/search?q=How+much+should+I+have+for+a+down+payment%3F&oq=How+much+should+I+have+for+a+down+payment%3F',
         label: "How much should I have for a down payment?",
         snippet: "here's a snippet for downpayment",
+      },
+      {
+        url: 'https://www.google.com/search?q=What%27s+a+credit+score%3F&oq=What%27s+a+credit+score%3F',
+        label: "No but seriously, what is it?",
+        snippet: "Alright fine, some more information.",
       },
     ] ,
     canBeCompleted: true,
@@ -121,40 +131,12 @@ const nodes: Node[] = [
         snippet: "here's a snippet for downpayment",
       },
     ] ,
-    canBeCompleted: false,
+    canBeCompleted: true,
     currentPath: ['Home Ownership', 'Credit Education'],
     description: "All about owning a home",
     parentIds: [],
     isEnabled() {
       return true
-    },
-  },
-  {
-    id: 'node3',
-    label: 'Some Info About Stuff',
-    articles: [
-      {
-        url: 'https://www.google.com/search?q=What%27s+a+credit+score%3F&oq=What%27s+a+credit+score%3F',
-        label: "What's a credit score?",
-        snippet: "Here's a snippet for credit score.",
-      },
-      {
-        url: 'https://www.google.com/search?q=What%27s+a+credit+score%3F&oq=What%27s+a+credit+score%3F',
-        label: "No but seriously, what is it?",
-        snippet: "Alright fine, some more information.",
-      },
-      {
-        url: 'https://www.google.com/search?q=How+much+should+I+have+for+a+down+payment%3F&oq=How+much+should+I+have+for+a+down+payment%3F',
-        label: "How much should I have for a down payment?",
-        snippet: "here's a snippet for downpayment",
-      },
-    ] ,
-    canBeCompleted: true,
-    currentPath: ['Financial Readiness', 'Credit Score'],
-    description: "something about credit score",
-    parentIds: [],
-    isEnabled() {
-      return true;
     },
   },
 ];
