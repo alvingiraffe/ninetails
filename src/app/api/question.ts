@@ -24,7 +24,7 @@ export interface Node {
   canBeCompleted: boolean;
   currentPath: string[];
   description: string;
-
+  parentIds: string[];
   isEnabled(): boolean;
 }
 
@@ -36,30 +36,28 @@ export interface Question {
 
 const questions: Question[] = [
   {
-    id: '0',
-    question: "What's your credit score?",
+    id: 'financial_readiness_ready',
+    question: "Are you ready to get started?",
     options: [
-      { id: 'good', label: 'Good' },
-      { id: 'bad', label: 'Bad' },
-      { id: 'unknown', label: 'I dunno' },
-      { id: 'long', label: 'some really long option... some really long option... some really long option... ' },
-    ],
+      { id: 'lets_go', label: 'Let\'s Go' },
+     ],
   },
   {
-    id: '1',
-    question: "Do you have a down payment?",
+    id: 'your_credit_score',
+    question: "What's your credit score?",
     options: [
-      { id: 'yes', label: 'Oh yeah! :koolaid:' },
-      { id: 'no', label: 'Heck naw.' },
-      { id: 'unknown', label: 'How would I know?' },
+      { id: 'dont_know', label: 'I don\'t know.' },
+      { id: 'terrible', label: 'Terrible' },
+      { id: 'ok', label: 'Fair' },
+      { id: 'excellent', label: 'Excellent' },
     ],
   },
 ];
 
 const nodes: Node[] = [
   {
-    id: 'node1',
-    label: 'Credit Score',
+    id: 'financial_readiness',
+    label: 'Financial Readiness',
     question: questions[0],
     articles: [
       {
@@ -68,17 +66,56 @@ const nodes: Node[] = [
         snippet: "here's a snippet for credit score",
       },
     ] ,
-    canBeCompleted: false,
-    currentPath: ['Financial Readiness', 'Credit Score'],
-    description: "something about credit score",
+    canBeCompleted: true,
+    currentPath: ['Financial Readiness'],
+    description: "something about financial readiness and how we're about to start asking more.",
+    parentIds: [],
     isEnabled() {
       return true;
     },
   },
   {
-    id: 'node2',
-    label: 'Downpayment',
+    id: 'credit_score',
+    label: 'Credit Score',
     question: questions[1],
+    articles: [
+      {
+        url: 'https://www.google.com/search?q=What%27s+a+credit+score%3F&oq=What%27s+a+credit+score%3F',
+        label: "What's a credit score?",
+        snippet: "here's a snippet for credit score",
+      },
+    ] ,
+    canBeCompleted: true,
+    currentPath: ['Financial Readiness', 'Credit Score'],
+    description: "something about credit score",
+    parentIds: ['financial_readiness'],
+    isEnabled() {
+      return true;
+    },
+  },
+  {
+    id: 'credit_education',
+    label: 'Credit Education',
+    question: undefined,
+    articles: [
+      {
+        url: 'https://www.google.com/search?q=How+much+should+I+have+for+a+down+payment%3F&oq=How+much+should+I+have+for+a+down+payment%3F',
+        label: "How much should I have for a down payment?",
+        snippet: "here's a snippet for downpayment",
+      },
+    ] ,
+    canBeCompleted: true,
+    currentPath: ['Financial Readiness', 'Credit Education'],
+    description: "what is credit and stuff",
+    parentIds: [],
+    isEnabled() {
+      return questionsAndAnswers['your_credit_score'] == undefined || questionsAndAnswers['your_credit_score'] == 'dont_know'
+    },
+  },
+  {
+    id: 'home_ownership',
+    label: 'Home Ownership',
+    question: undefined,
     articles: [
       {
         url: 'https://www.google.com/search?q=How+much+should+I+have+for+a+down+payment%3F&oq=How+much+should+I+have+for+a+down+payment%3F',
@@ -87,24 +124,59 @@ const nodes: Node[] = [
       },
     ] ,
     canBeCompleted: false,
-    currentPath: ['Financial Readiness', 'Downpayment'],
-    description: "something about downpayment",
-    isEnabled: () => true,
-  },
+    currentPath: ['Home Ownership', 'Credit Education'],
+    description: "All about owning a home",
+    parentIds: [],
+    isEnabled() {
+      return true
+    },
+  }
 ];
 
 let nodeIndex = 0;
 
 const questionsAndAnswers: Record<string, string> = {};
 const completedNodes: Record<string, boolean> = {};
+let current = nodes[0]
 
 export function currentNode(): Node {
-  return nodes[0];
+  return current;
+}
+
+function isNodeCompleted(node: Node): boolean {
+  if (completedNodes[node.id]) {
+    return true;
+  } 
+  
+  node.parentIds.forEach(parentId => {
+    if (completedNodes[parentId]) {
+      return true;
+    }
+  })
+
+  if (node.question) {
+    return questionsAndAnswers[node.question.id] != undefined
+  } 
+  
+  return false
+}
+
+function updateCurrentNode(): Node {
+  //find the first node that is not completed
+  // and where isEnabled = true
+
+  let found = nodes.find(node => !isNodeCompleted(node) && node.isEnabled()) 
+  if (found != undefined) {
+    current = found
+  } else {
+    console.error("Found no nodes left enabled.");
+  }
+  return current;
 }
 
 export function submitAnswer(questionId: string, answerId: string): Node {
   questionsAndAnswers[questionId] = answerId;
-  return nodes[(++nodeIndex) % nodes.length];
+  return updateCurrentNode();
   // const node = {
   //   ...nodes[(++nodeIndex) % nodes.length],
   //   question: undefined,
@@ -114,5 +186,5 @@ export function submitAnswer(questionId: string, answerId: string): Node {
 
 export function completeNode(nodeId: string): Node {
   completedNodes[nodeId] = true;
-  return nodes[(++nodeIndex) % nodes.length];
+  return updateCurrentNode();
 }
