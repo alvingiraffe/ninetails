@@ -1,6 +1,6 @@
 // import { doNetworkRequest } from './util';
 
-interface Option {
+interface Answer {
   id: string;
   label: string;
 }
@@ -10,11 +10,28 @@ interface Link {
   label: string;
 }
 
+interface Article {
+  url: string;
+  label: string;
+  snippet: string;
+}
+
+export interface Node {
+  id: string;
+  label: string;
+  question?: Question;
+  articles: Article[];
+  canBeCompleted: boolean;
+  currentPath: string[];
+  description: string;
+
+  isEnabled(): boolean;
+}
+
 export interface Question {
   id: string;
   question: string;
-  options: Option[];
-  links?: Link[];
+  options: Answer[];
 }
 
 const questions: Question[] = [
@@ -27,9 +44,6 @@ const questions: Question[] = [
       { id: 'unknown', label: 'I dunno' },
       { id: 'long', label: 'some really long option... some really long option... some really long option... ' },
     ],
-    links: [
-      { url: 'https://www.google.com/search?q=What%27s+a+credit+score%3F&oq=What%27s+a+credit+score%3F', label: "What's a credit score?" },
-    ],
   },
   {
     id: '1',
@@ -39,23 +53,66 @@ const questions: Question[] = [
       { id: 'no', label: 'Heck naw.' },
       { id: 'unknown', label: 'How would I know?' },
     ],
-    links: [
-      { url: 'https://www.google.com/search?q=How+much+should+I+have+for+a+down+payment%3F&oq=How+much+should+I+have+for+a+down+payment%3F', label: "How much should I have for a down payment?" },
-    ],
   },
 ];
 
-const getQ = (questionId: number): Question => ({
-    ...questions[questionId],
-    links: Math.random() >= .5 ? undefined : questions[questionId]?.links,
-});
+const nodes: Node[] = [
+  {
+    id: 'node1',
+    label: 'Credit Score',
+    question: questions[0],
+    articles: [
+      {
+        url: 'https://www.google.com/search?q=What%27s+a+credit+score%3F&oq=What%27s+a+credit+score%3F',
+        label: "What's a credit score?",
+        snippet: "here's a snippet for credit score",
+      },
+    ] ,
+    canBeCompleted: false,
+    currentPath: ['Financial Readiness', 'Credit Score'],
+    description: "something about credit score",
+    isEnabled() {
+      return true;
+    },
+  },
+  {
+    id: 'node2',
+    label: 'Downpayment',
+    question: questions[1],
+    articles: [
+      {
+        url: 'https://www.google.com/search?q=How+much+should+I+have+for+a+down+payment%3F&oq=How+much+should+I+have+for+a+down+payment%3F',
+        label: "How much should I have for a down payment?",
+        snippet: "here's a snippet for downpayment",
+      },
+    ] ,
+    canBeCompleted: false,
+    currentPath: ['Financial Readiness', 'Downpayment'],
+    description: "something about downpayment",
+    isEnabled: () => true,
+  },
+];
 
-export const getQuestion = async (questionId: string): Promise<Question> => {
-  // TODO mock
-  return getQ(parseInt(questionId, 10)) ?? getQ(0);
-};
+let nodeIndex = 0;
 
-export const submitAnswer = async (questionId: string, answer: string): Promise<Question> => {
-  // TODO mock
-  return getQ((parseInt(questionId, 10) + 1) % questions.length);
-};
+const questionsAndAnswers: Record<string, string> = {};
+const completedNodes: Record<string, boolean> = {};
+
+export function currentNode(): Node {
+  return nodes[0];
+}
+
+export function submitAnswer(questionId: string, answerId: string): Node {
+  questionsAndAnswers[questionId] = answerId;
+  return nodes[(++nodeIndex) % nodes.length];
+  // const node = {
+  //   ...nodes[(++nodeIndex) % nodes.length],
+  //   question: undefined,
+  // };
+  // return node;
+}
+
+export function completeNode(nodeId: string): Node {
+  completedNodes[nodeId] = true;
+  return nodes[(++nodeIndex) % nodes.length];
+}

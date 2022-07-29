@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { QuestionComponent } from './app/components/Question';
+import { QuizComponent } from './app/components/Question';
 
 interface AppProps {}
 
@@ -18,7 +18,7 @@ export const InternalApp: React.FC<InternalAppProps> = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/questions/:questionId" element={<QuestionComponent />} />
+        <Route path="/quiz" element={<QuizComponent />} />
         {/* <Route index element={<Hub />} /> */}
         {/* <Route path="*" element={<Hub />} /> */}
       </Routes>

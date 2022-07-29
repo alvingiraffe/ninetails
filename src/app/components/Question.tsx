@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getQuestion, Question, submitAnswer } from '../api/question';
+import { currentNode, Node, submitAnswer } from '../api/question';
 import { Flexbox } from './layout/Flexbox';
 import styled from 'styled-components';
 import { Select } from './Select';
 import { Line } from './common/Line';
 import { makePropToggle } from './utils';
+// import { TypeReveal } from './common/TypeReveal';
 
 const QuestionText = styled.h1`
 `;
@@ -23,58 +23,54 @@ const SubmitButton = styled.button`
   border-radius: 1rem;
   padding: .5rem 1rem;
   background-color: ${submitProp('enabled', '#396cf7', '#efefef')};
-  color: #efefef;
+  color:${submitProp('enabled', '#efefef', '#464646')};
 `;
 
 const Link = styled.a`
   padding: 1rem 0;
 `;
 
-interface QuestionParams {
-  questionId: string;
-  [key: string]: string;
-}
-
-export interface QuestionProps {}
-export const QuestionComponent: React.FC<QuestionProps> = () => {
-  const { questionId } = useParams<QuestionParams>() as QuestionParams;
-
-  const [question, setQuestion] = useState<Question>();
-  const [selected, setSelected] = useState<string>();
+export interface QuizComponentProps {}
+export const QuizComponent: React.FC<QuizComponentProps> = () => {
+  const [node, setNode] = useState<Node>();
+  // const [question, setQuestion] = useState<Question>();
+  const [selected, setSelected] = useState<string | null>();
 
   useEffect(() => {
-    getQuestion(questionId).then(res => setQuestion(res));
-  }, [questionId, setQuestion]);
+    setNode(currentNode());
+  }, []);
 
   const onSelect = useCallback((id: string) => setSelected(id), [setSelected]);
 
-  const onSubmit = useCallback(async () => {
+  const onSubmit = useCallback(() => {
     if (selected) {
-      const nextQuestion = await submitAnswer(question!.id, selected);
-      window.location.href = `/questions/${nextQuestion.id}`;
-      // then redirect
+      const nextNode = submitAnswer(node!.question!.id, selected);
+      setNode(nextNode);
+      setSelected(null);
     }
-  }, [question, selected]);
+  }, [node, selected]);
 
-  if (!question) return <div>Loading...</div>;
+  if (!node) return <div>Loading...</div>;
+  if (!node.question) return <div>haven't implemented node without question</div>;
 
-  const selectOptions = question.options.map(o => ({
+  const selectOptions = node.question.options.map(o => ({
     ...o,
     selected: o.id === selected,
   }));
 
-  const links = (question.links ?? []).map(l => <Link href={l.url} key={l.label}>{l.label}</Link>);
+  const articles = (node.articles ?? []).map(l => <Link href={l.url} key={l.label}>{l.label}</Link>);
 
   return (
     <Flexbox justifyContent="center">
       <Flexbox direction="column" textAlign="center" alignItems="center">
-        <QuestionText>{question.question}</QuestionText>
+        <QuestionText>{node.question.question}</QuestionText>
+        {/* <TypeReveal text={question.question} /> */}
         <Select options={selectOptions} onSelect={onSelect}></Select>
         <SubmitButton enabled={!!selected} onClick={onSubmit}>Submit</SubmitButton>
-        {links.length > 0 && (
+        {articles.length > 0 && (
           <>
             <Line />
-            {links}
+            {articles}
           </>
         )}
       </Flexbox>
