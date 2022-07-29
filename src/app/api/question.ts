@@ -1,12 +1,5 @@
-// import { doNetworkRequest } from './util';
-
 interface Answer {
   id: string;
-  label: string;
-}
-
-interface Link {
-  url: string;
   label: string;
 }
 
@@ -63,7 +56,12 @@ const nodes: Node[] = [
       {
         url: 'https://www.google.com/search?q=What%27s+a+credit+score%3F&oq=What%27s+a+credit+score%3F',
         label: "What's a credit score?",
-        snippet: "here's a snippet for credit score",
+        snippet: "Here's a snippet for credit score.",
+      },
+      {
+        url: 'https://www.google.com/search?q=What%27s+a+credit+score%3F&oq=What%27s+a+credit+score%3F',
+        label: "No but seriously, what is it?",
+        snippet: "Alright fine, some more information.",
       },
     ] ,
     canBeCompleted: true,
@@ -130,10 +128,36 @@ const nodes: Node[] = [
     isEnabled() {
       return true
     },
-  }
+  },
+  {
+    id: 'node3',
+    label: 'Some Info About Stuff',
+    articles: [
+      {
+        url: 'https://www.google.com/search?q=What%27s+a+credit+score%3F&oq=What%27s+a+credit+score%3F',
+        label: "What's a credit score?",
+        snippet: "Here's a snippet for credit score.",
+      },
+      {
+        url: 'https://www.google.com/search?q=What%27s+a+credit+score%3F&oq=What%27s+a+credit+score%3F',
+        label: "No but seriously, what is it?",
+        snippet: "Alright fine, some more information.",
+      },
+      {
+        url: 'https://www.google.com/search?q=How+much+should+I+have+for+a+down+payment%3F&oq=How+much+should+I+have+for+a+down+payment%3F',
+        label: "How much should I have for a down payment?",
+        snippet: "here's a snippet for downpayment",
+      },
+    ] ,
+    canBeCompleted: true,
+    currentPath: ['Financial Readiness', 'Credit Score'],
+    description: "something about credit score",
+    parentIds: [],
+    isEnabled() {
+      return true;
+    },
+  },
 ];
-
-let nodeIndex = 0;
 
 const questionsAndAnswers: Record<string, string> = {};
 const completedNodes: Record<string, boolean> = {};
@@ -146,8 +170,8 @@ export function currentNode(): Node {
 function isNodeCompleted(node: Node): boolean {
   if (completedNodes[node.id]) {
     return true;
-  } 
-  
+  }
+
   node.parentIds.forEach(parentId => {
     if (completedNodes[parentId]) {
       return true;
@@ -156,8 +180,8 @@ function isNodeCompleted(node: Node): boolean {
 
   if (node.question) {
     return questionsAndAnswers[node.question.id] != undefined
-  } 
-  
+  }
+
   return false
 }
 
@@ -165,7 +189,7 @@ function updateCurrentNode(): Node {
   //find the first node that is not completed
   // and where isEnabled = true
 
-  let found = nodes.find(node => !isNodeCompleted(node) && node.isEnabled()) 
+  let found = nodes.find(node => !isNodeCompleted(node) && node.isEnabled())
   if (found != undefined) {
     current = found
   } else {
@@ -177,11 +201,6 @@ function updateCurrentNode(): Node {
 export function submitAnswer(questionId: string, answerId: string): Node {
   questionsAndAnswers[questionId] = answerId;
   return updateCurrentNode();
-  // const node = {
-  //   ...nodes[(++nodeIndex) % nodes.length],
-  //   question: undefined,
-  // };
-  // return node;
 }
 
 export function completeNode(nodeId: string): Node {

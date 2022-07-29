@@ -34,6 +34,7 @@ export interface FlexboxProps {
   width?: string;
   textAlign?: TextAlign;
   alignItems?: AlignItems;
+  marginTop?: string;
 }
 
 const prop = makePropGetter<FlexboxProps>();
@@ -46,4 +47,5 @@ export const Flexbox = styled.div<FlexboxProps>`
   width: ${prop('width', '')};
   text-align: ${prop('textAlign', 'left')};
   align-items: ${prop('alignItems', 'stretch')};
+  margin-top: ${prop('marginTop', '0px')};
 `;
