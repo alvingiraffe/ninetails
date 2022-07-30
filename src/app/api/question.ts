@@ -37,12 +37,13 @@ const questions: Question[] = [
   },
   {
     id: 'your_credit_score',
-    question: "What's your credit score?",
+    question: "What is your credit score?",
     options: [
       { id: 'dont_know', label: 'I don\'t know.' },
-      { id: 'low', label: 'Low' },
-      { id: 'medium', label: 'Medium' },
-      { id: 'high', label: 'Excellent' },
+      { id: 'low', label: 'Below 580 (Poor)' },
+      { id: 'fair', label: '580 - 640 (Fair)' },
+      { id: 'good', label: '640 - 720 (Good)' },
+      { id: 'high', label: 'Above 720 (Excellent)' },
     ],
   },
   {
@@ -55,7 +56,7 @@ const questions: Question[] = [
   },
   {
     id: 'is_first_time_buyer',
-    question: "Are you a first-time buyer?",
+    question: "Are you a first time home buyer?",
     options: [
       { id: 'yes', label: 'yes' },
       { id: 'no', label: 'no' },
@@ -63,7 +64,7 @@ const questions: Question[] = [
   },
   {
     id: 'is_veteran',
-    question: "Are you a veteran?",
+    question: "Are you or your spouse a veteran or active duty service member in the United States Armed Forces?",
     options: [
       { id: 'yes', label: 'yes' },
       { id: 'no', label: 'no' },
@@ -81,8 +82,8 @@ const questions: Question[] = [
     question: "Which best describes the area where you are looking to buy?",
     options: [
       { id: 'urban', label: 'Urban' },
-      { id: 'rural', label: 'Rural' },
       { id: 'suburban', label: 'Suburban' },
+      { id: 'rural', label: 'Rural' },
       { id: 'dont_know', label: 'I Don\'t know' },
      ],
   },
@@ -258,7 +259,7 @@ const nodes: Node[] = [
     description: `Great news! It looks like you might qualify for a USDA loan. These government-backed loans are offered by many lenders and secured by the US Government, allowing you to put no money down and potentially qualify for a lower interest rate than you may receive from a conventional lender. Maximum household limits and specific location restrictions may apply. USDA loans also require Private Mortgage Insurance for the duration of the loan.`,
     parentIds: ['financing'],
     isEnabled() {
-      return (questionsAndAnswers['your_credit_score'] == undefined || questionsAndAnswers['your_credit_score'] == 'medium') &&
+      return (questionsAndAnswers['your_credit_score'] == undefined || questionsAndAnswers['your_credit_score'] == 'good') &&
       (questionsAndAnswers['eligible_home_area'] != undefined) &&
       (questionsAndAnswers['eligible_home_area'] == 'rural' || questionsAndAnswers['eligible_home_area'] == 'suburban');
     },
