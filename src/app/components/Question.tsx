@@ -15,6 +15,7 @@ const Breadcrumb = styled.p`
 `;
 
 const NodeDescription = styled.p`
+  max-width: 300px;
 `;
 
 const QuestionText = styled.h2`
@@ -27,7 +28,7 @@ interface SubmitButtonProps {
 const submitProp = makePropToggle<SubmitButtonProps>();
 
 const SubmitButton = styled.button`
-  width: fit-content;
+  width: 120px;
   margin: 2rem 0rem;
   border: 1px solid #333;
   border-radius: 1rem;
@@ -40,10 +41,11 @@ const Link = styled.a`
 `;
 
 const ArticleSnippet = styled.p`
+  max-width: 300px;
 `;
 
 const CompleteButton = styled.button`
-  width: fit-content;
+  width: 120px;
   margin: 2rem 0rem;
   border: 1px solid #333;
   border-radius: 1rem;
@@ -96,7 +98,7 @@ export const QuizComponent: React.FC<QuizComponentProps> = () => {
 
   return (
     <Flexbox justifyContent="center">
-      <Flexbox direction="column" textAlign="center" alignItems="center">
+      <Flexbox direction="column" textAlign="center" alignItems="center" width="500px">
         <NodeLabel>{node.label}</NodeLabel>
         <Breadcrumb>{node.currentPath.join(' > ')}</Breadcrumb>
         <NodeDescription>{node.description}</NodeDescription>

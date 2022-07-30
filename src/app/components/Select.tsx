@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Box } from './layout/Box';
+import { Flexbox } from './layout/Flexbox';
 import { makePropToggle } from './utils';
 
 interface OptionProps {
@@ -11,7 +11,7 @@ const prop = makePropToggle<OptionProps>();
 
 const Option = styled.button`
   display: flex;
-  width: 100%;
+  width: 300px;
   justify-content: center;
   align-items: center;
   border: 1px solid #333;
@@ -42,5 +42,7 @@ export const Select: React.FC<SelectProps> = ({
     </Option>
   ));
 
-  return <Box width="100%">{os}</Box>;
+  return <Flexbox width="100%" direction="column" alignItems='center'>
+    {os}
+  </Flexbox>;
 };
