@@ -155,7 +155,7 @@ const nodes: Node[] = [
     ] ,
     canBeCompleted: true,
     currentPath: ['Financial Readiness', 'Credit Education'],
-    description: `Your credit score is an important piece of the homebuying puzzle. Lenders use credit scores as one factor to decide who to lend to, so it is important to know what your credit score is. 
+    description: `Your credit score is an important piece of the homebuying puzzle. Lenders use credit scores as one factor to decide who to lend to, so it is important to know what your credit score is.
     There are three main companies that track consumer credit: Experian, Equifax, and TransUnion. Every year, you can request a free copy of your credit report from each bureau to see your score as well as your credit account history, any credit inquiries, and relevant public records.
     In addition to the credit bureaus, your bank may offer free credit monitoring and websites like CreditKarma and CreditSesame can help you stay on top of your credit throughout the year.`,
     parentIds: ['financial_readiness'],
@@ -258,8 +258,8 @@ const nodes: Node[] = [
     description: `Great news! It looks like you might qualify for a USDA loan. These government-backed loans are offered by many lenders and secured by the US Government, allowing you to put no money down and potentially qualify for a lower interest rate than you may receive from a conventional lender. Maximum household limits and specific location restrictions may apply. USDA loans also require Private Mortgage Insurance for the duration of the loan.`,
     parentIds: ['financing'],
     isEnabled() {
-      return (questionsAndAnswers['your_credit_score'] == undefined || questionsAndAnswers['your_credit_score'] == 'medium') && 
-      (questionsAndAnswers['eligible_home_area'] != undefined) && 
+      return (questionsAndAnswers['your_credit_score'] == undefined || questionsAndAnswers['your_credit_score'] == 'medium') &&
+      (questionsAndAnswers['eligible_home_area'] != undefined) &&
       (questionsAndAnswers['eligible_home_area'] == 'rural' || questionsAndAnswers['eligible_home_area'] == 'suburban');
     },
   },
@@ -327,7 +327,7 @@ const nodes: Node[] = [
     articles: [
     ] ,
     canBeCompleted: false,
-    currentPath: ['Home Ownership', 'Credit Education'],
+    currentPath: ['Home Ownership'],
     description: `Congratulations! The years of saving, months of looking, and weeks of closing have finally paid off! `,
     parentIds: [],
     isEnabled() {

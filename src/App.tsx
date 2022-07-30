@@ -19,8 +19,8 @@ export const InternalApp: React.FC<InternalAppProps> = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/quiz" element={<QuizComponent />} />
-        {/* <Route index element={<Hub />} /> */}
-        {/* <Route path="*" element={<Hub />} /> */}
+        <Route index element={<QuizComponent />} />
+        <Route path="*" element={<QuizComponent />} />
       </Routes>
     </BrowserRouter>
   );

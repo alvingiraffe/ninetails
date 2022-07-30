@@ -26,6 +26,13 @@ type AlignItems =
   | 'end'
   | 'self-start'
   | 'self-end';
+type AlignSelf =
+  | 'auto'
+  | 'flex-start'
+  | 'flex-end'
+  | 'center'
+  | 'baseline'
+  | 'stretch';
 
 export interface FlexboxProps {
   direction?: Direction;
@@ -35,6 +42,9 @@ export interface FlexboxProps {
   textAlign?: TextAlign;
   alignItems?: AlignItems;
   marginTop?: string;
+  maxWidth?: string;
+  minWidth?: string;
+  alignSelf?: AlignSelf;
 }
 
 const prop = makePropGetter<FlexboxProps>();
@@ -44,8 +54,11 @@ export const Flexbox = styled.div<FlexboxProps>`
   flex-direction: ${prop('direction', 'row')};
   justify-content: ${prop('justifyContent', 'flex-start')};
   height: ${prop('height', '')};
+  max-width: ${prop('maxWidth', '')};
+  min-width: ${prop('minWidth', '')};
   width: ${prop('width', '')};
   text-align: ${prop('textAlign', 'left')};
   align-items: ${prop('alignItems', 'stretch')};
   margin-top: ${prop('marginTop', '0px')};
+  align-self: ${prop('alignSelf', 'auto')};
 `;

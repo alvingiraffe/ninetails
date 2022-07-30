@@ -4,7 +4,7 @@ import { Flexbox } from './layout/Flexbox';
 import styled from 'styled-components';
 import { Select } from './Select';
 import { Line } from './common/Line';
-import { makePropToggle } from './utils';
+import { Banner } from './common/Banner';
 
 const NodeLabel = styled.h1`
 `;
@@ -21,23 +21,13 @@ const NodeDescription = styled.p`
 const QuestionText = styled.h2`
 `;
 
-interface SubmitButtonProps {
-  enabled: boolean;
-}
-
-const submitProp = makePropToggle<SubmitButtonProps>();
-
-const SubmitButton = styled.button`
-  width: 120px;
-  margin: 2rem 0rem;
-  border: 1px solid #333;
-  border-radius: 1rem;
-  padding: .5rem 1rem;
-  background-color: ${submitProp('enabled', '#396cf7', '#efefef')};
-  color:${submitProp('enabled', '#efefef', '#464646')};
+const RelatedArticlesHeader = styled.h2`
 `;
 
-const Link = styled.a`
+const ArticleHeader = styled.a`
+  font-size: 1.15rem;
+  font-weight: bold;
+  margin-top: 1rem;
 `;
 
 const ArticleSnippet = styled.p`
@@ -57,28 +47,27 @@ const CompleteButton = styled.button`
 export interface QuizComponentProps {}
 export const QuizComponent: React.FC<QuizComponentProps> = () => {
   const [node, setNode] = useState<Node>();
-  // const [question, setQuestion] = useState<Question>();
-  const [selected, setSelected] = useState<string | null>();
+  const [firstPage, setFirstPage] = useState(true);
 
   useEffect(() => {
     setNode(currentNode());
   }, []);
 
-  const onSelect = useCallback((id: string) => setSelected(id), [setSelected]);
-
-  const onSubmit = useCallback(() => {
-    if (selected) {
-      const nextNode = submitAnswer(node!.question!.id, selected);
-      setNode(nextNode);
-      setSelected(null);
+  const onSelect = useCallback((id: string) => {
+    const nextNode = submitAnswer(node!.question!.id, id);
+    if (nextNode.id !== node?.id) {
+      setFirstPage(false);
     }
-  }, [node, selected]);
+    setNode(nextNode);
+  }, [node]);
 
   const onComplete = useCallback(() => {
     if (node?.canBeCompleted) {
       const nextNode = completeNode(node.id);
+      if (nextNode.id !== node?.id) {
+        setFirstPage(false);
+      }
       setNode(nextNode);
-      setSelected(null);
     }
   }, [node]);
 
@@ -86,19 +75,19 @@ export const QuizComponent: React.FC<QuizComponentProps> = () => {
 
   const selectOptions = node.question?.options.map(o => ({
     ...o,
-    selected: o.id === selected,
   }));
 
   const articles = (node.articles ?? []).map(article => (
-    <Flexbox marginTop='1rem' direction='column' alignItems='center' key={article.label}>
-      <Link href={article.url}>{article.label}</Link>
+    <Flexbox marginTop='1rem' direction='column' alignItems='flex-start' key={article.label}>
+      <ArticleHeader href={article.url}>{article.label}</ArticleHeader>
       <ArticleSnippet>{article.snippet}</ArticleSnippet>
     </Flexbox>
   ));
 
   return (
-    <Flexbox justifyContent="center">
-      <Flexbox direction="column" textAlign="center" alignItems="center" width="500px">
+    <Flexbox justifyContent="center" direction="column" alignItems="center">
+      <Flexbox direction="column" textAlign="center" alignItems="center" width="500px" maxWidth="100%">
+        {firstPage && <Banner />}
         <NodeLabel>{node.label}</NodeLabel>
         <Breadcrumb>{node.currentPath.join(' > ')}</Breadcrumb>
         <NodeDescription>{node.description}</NodeDescription>
@@ -107,7 +96,6 @@ export const QuizComponent: React.FC<QuizComponentProps> = () => {
           <>
             <QuestionText>{node.question.question}</QuestionText>
             <Select options={selectOptions!} onSelect={onSelect}></Select>
-            <SubmitButton enabled={!!selected} onClick={onSubmit}>Submit</SubmitButton>
           </>
         }
         {!!node.question && articles.length > 0 &&
@@ -115,7 +103,10 @@ export const QuizComponent: React.FC<QuizComponentProps> = () => {
         }
         {articles.length > 0 && (
           <>
-            {articles}
+            <RelatedArticlesHeader>Related Articles</RelatedArticlesHeader>
+            <Flexbox direction="column" alignItems='flex-start' width='80%'>
+              {articles}
+            </Flexbox>
           </>
         )}
         {node.canBeCompleted &&
