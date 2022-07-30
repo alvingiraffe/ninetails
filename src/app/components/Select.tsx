@@ -19,6 +19,7 @@ const Option = styled.button`
   padding: .5rem 1rem;
   background-color: ${prop('selected', '#c3e4ff', '#fff')};
   margin-bottom: 1rem;
+  cursor: pointer;
 
   :active {
     background-color: #c3e4ff;

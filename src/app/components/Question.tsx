@@ -14,8 +14,17 @@ const Breadcrumb = styled.p`
   font-size: .75rem;
 `;
 
+const SkipLink = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  color: #069;
+  text-decoration: underline;
+  cursor: pointer;
+`;
+
 const NodeDescription = styled.p`
-  max-width: 300px;
+  text-align: justify;
 `;
 
 const QuestionText = styled.h2`
@@ -31,17 +40,7 @@ const ArticleHeader = styled.a`
 `;
 
 const ArticleSnippet = styled.p`
-  max-width: 300px;
-`;
-
-const CompleteButton = styled.button`
-  width: 120px;
-  margin: 2rem 0rem;
-  border: 1px solid #333;
-  border-radius: 1rem;
-  padding: .5rem 1rem;
-  background-color: #396cf7;
-  color: #efefef;
+  text-align: justify;
 `;
 
 export interface QuizComponentProps {}
@@ -90,7 +89,10 @@ export const QuizComponent: React.FC<QuizComponentProps> = () => {
         {firstPage && <Banner />}
         <NodeLabel>{node.label}</NodeLabel>
         <Breadcrumb>{node.currentPath.join(' > ')}</Breadcrumb>
-        <NodeDescription>{node.description}</NodeDescription>
+        <Flexbox direction="column" alignItems='flex-start' width='80%'>
+          <NodeDescription>{node.description}</NodeDescription>
+        </Flexbox>
+        {node.canBeCompleted && <SkipLink onClick={onComplete}>Skip this section</SkipLink>}
         <Line />
         {!!node.question &&
           <>
@@ -109,9 +111,6 @@ export const QuizComponent: React.FC<QuizComponentProps> = () => {
             </Flexbox>
           </>
         )}
-        {node.canBeCompleted &&
-          <CompleteButton onClick={onComplete}>What's Next?</CompleteButton>
-        }
       </Flexbox>
     </Flexbox>
   );
